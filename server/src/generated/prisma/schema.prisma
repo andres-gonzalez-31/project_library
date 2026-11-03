@@ -1,0 +1,92 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Rol {
+  USUARIO
+  ADMIN
+}
+
+enum EstadoLectura {
+  LEYENDO
+  TERMINADO
+}
+
+model Usuario {
+  id               String    @id @default(uuid())
+  email            String    @unique
+  passwordHash     String
+  nombre           String
+  rol              Rol       @default(USUARIO)
+  intentosFallidos Int       @default(0)
+  bloqueadoHasta   DateTime?
+  ultimoAcceso     DateTime?
+  creadoEn         DateTime  @default(now())
+  actualizadoEn    DateTime  @updatedAt
+
+  progresos  Progreso[]
+  auditorias Auditoria[]
+}
+
+model Libro {
+  id          String   @id @default(uuid())
+  titulo      String
+  autor       String
+  descripcion String
+  portadaUrl  String?
+  publicado   Boolean  @default(true)
+  creadoEn    DateTime @default(now())
+
+  paginas   Pagina[]
+  progresos Progreso[]
+
+  @@index([titulo])
+}
+
+model Pagina {
+  id        String @id @default(uuid())
+  libroId   String
+  numero    Int
+  contenido String
+
+  libro Libro @relation(fields: [libroId], references: [id], onDelete: Cascade)
+
+  @@unique([libroId, numero])
+}
+
+model Progreso {
+  id            String        @id @default(uuid())
+  usuarioId     String
+  libroId       String
+  paginaActual  Int           @default(1)
+  estado        EstadoLectura @default(LEYENDO)
+  resumen       String?
+  observaciones String?
+  iniciadoEn    DateTime      @default(now())
+  actualizadoEn DateTime      @updatedAt
+
+  usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  libro   Libro   @relation(fields: [libroId], references: [id], onDelete: Cascade)
+
+  @@unique([usuarioId, libroId])
+}
+
+model Auditoria {
+  id        String   @id @default(uuid())
+  usuarioId String?
+  accion    String
+  exito     Boolean
+  ip        String?
+  userAgent String?
+  detalle   String?
+  creadoEn  DateTime @default(now())
+
+  usuario Usuario? @relation(fields: [usuarioId], references: [id], onDelete: SetNull)
+
+  @@index([accion, creadoEn])
+}
