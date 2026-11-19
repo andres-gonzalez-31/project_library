@@ -7,6 +7,9 @@ import { notFound, errorHandler } from './middlewares/errorHandler.js';
 import authRoutes from './routes/auth.routes.js';
 import libroRoutes from './routes/libro.routes.js';
 import progresoRoutes from './routes/progreso.routes.js';
+import importarRoutes from './routes/importar.routes.js';
+
+
 
 
 const app = express();
@@ -35,6 +38,7 @@ app.get('/api/health', (req, res) => {
   res.json({ ok: true, hora: new Date().toISOString() });
 });
 
+app.use('/api/fuente', importarRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/libros', libroRoutes);
 app.use('/api/progreso', progresoRoutes);

@@ -140,7 +140,8 @@ exports.Prisma.LibroScalarFieldEnum = {
   descripcion: 'descripcion',
   portadaUrl: 'portadaUrl',
   publicado: 'publicado',
-  creadoEn: 'creadoEn'
+  creadoEn: 'creadoEn',
+  gutenbergId: 'gutenbergId'
 };
 
 exports.Prisma.PaginaScalarFieldEnum = {

@@ -34,16 +34,16 @@ model Usuario {
 }
 
 model Libro {
-  id          String   @id @default(uuid())
+  id          String     @id @default(uuid())
   titulo      String
   autor       String
   descripcion String
   portadaUrl  String?
-  publicado   Boolean  @default(true)
-  creadoEn    DateTime @default(now())
-
-  paginas   Pagina[]
-  progresos Progreso[]
+  publicado   Boolean    @default(true)
+  creadoEn    DateTime   @default(now())
+  gutenbergId Int?       @unique
+  paginas     Pagina[]
+  progresos   Progreso[]
 
   @@index([titulo])
 }

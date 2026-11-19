@@ -2574,8 +2574,18 @@ export namespace Prisma {
 
   export type AggregateLibro = {
     _count: LibroCountAggregateOutputType | null
+    _avg: LibroAvgAggregateOutputType | null
+    _sum: LibroSumAggregateOutputType | null
     _min: LibroMinAggregateOutputType | null
     _max: LibroMaxAggregateOutputType | null
+  }
+
+  export type LibroAvgAggregateOutputType = {
+    gutenbergId: number | null
+  }
+
+  export type LibroSumAggregateOutputType = {
+    gutenbergId: number | null
   }
 
   export type LibroMinAggregateOutputType = {
@@ -2586,6 +2596,7 @@ export namespace Prisma {
     portadaUrl: string | null
     publicado: boolean | null
     creadoEn: Date | null
+    gutenbergId: number | null
   }
 
   export type LibroMaxAggregateOutputType = {
@@ -2596,6 +2607,7 @@ export namespace Prisma {
     portadaUrl: string | null
     publicado: boolean | null
     creadoEn: Date | null
+    gutenbergId: number | null
   }
 
   export type LibroCountAggregateOutputType = {
@@ -2606,9 +2618,18 @@ export namespace Prisma {
     portadaUrl: number
     publicado: number
     creadoEn: number
+    gutenbergId: number
     _all: number
   }
 
+
+  export type LibroAvgAggregateInputType = {
+    gutenbergId?: true
+  }
+
+  export type LibroSumAggregateInputType = {
+    gutenbergId?: true
+  }
 
   export type LibroMinAggregateInputType = {
     id?: true
@@ -2618,6 +2639,7 @@ export namespace Prisma {
     portadaUrl?: true
     publicado?: true
     creadoEn?: true
+    gutenbergId?: true
   }
 
   export type LibroMaxAggregateInputType = {
@@ -2628,6 +2650,7 @@ export namespace Prisma {
     portadaUrl?: true
     publicado?: true
     creadoEn?: true
+    gutenbergId?: true
   }
 
   export type LibroCountAggregateInputType = {
@@ -2638,6 +2661,7 @@ export namespace Prisma {
     portadaUrl?: true
     publicado?: true
     creadoEn?: true
+    gutenbergId?: true
     _all?: true
   }
 
@@ -2679,6 +2703,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: LibroAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: LibroSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: LibroMinAggregateInputType
@@ -2709,6 +2745,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: LibroCountAggregateInputType | true
+    _avg?: LibroAvgAggregateInputType
+    _sum?: LibroSumAggregateInputType
     _min?: LibroMinAggregateInputType
     _max?: LibroMaxAggregateInputType
   }
@@ -2721,7 +2759,10 @@ export namespace Prisma {
     portadaUrl: string | null
     publicado: boolean
     creadoEn: Date
+    gutenbergId: number | null
     _count: LibroCountAggregateOutputType | null
+    _avg: LibroAvgAggregateOutputType | null
+    _sum: LibroSumAggregateOutputType | null
     _min: LibroMinAggregateOutputType | null
     _max: LibroMaxAggregateOutputType | null
   }
@@ -2748,6 +2789,7 @@ export namespace Prisma {
     portadaUrl?: boolean
     publicado?: boolean
     creadoEn?: boolean
+    gutenbergId?: boolean
     paginas?: boolean | Libro$paginasArgs<ExtArgs>
     progresos?: boolean | Libro$progresosArgs<ExtArgs>
     _count?: boolean | LibroCountOutputTypeDefaultArgs<ExtArgs>
@@ -2761,6 +2803,7 @@ export namespace Prisma {
     portadaUrl?: boolean
     publicado?: boolean
     creadoEn?: boolean
+    gutenbergId?: boolean
   }, ExtArgs["result"]["libro"]>
 
   export type LibroSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -2771,6 +2814,7 @@ export namespace Prisma {
     portadaUrl?: boolean
     publicado?: boolean
     creadoEn?: boolean
+    gutenbergId?: boolean
   }, ExtArgs["result"]["libro"]>
 
   export type LibroSelectScalar = {
@@ -2781,9 +2825,10 @@ export namespace Prisma {
     portadaUrl?: boolean
     publicado?: boolean
     creadoEn?: boolean
+    gutenbergId?: boolean
   }
 
-  export type LibroOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "titulo" | "autor" | "descripcion" | "portadaUrl" | "publicado" | "creadoEn", ExtArgs["result"]["libro"]>
+  export type LibroOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "titulo" | "autor" | "descripcion" | "portadaUrl" | "publicado" | "creadoEn" | "gutenbergId", ExtArgs["result"]["libro"]>
   export type LibroInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     paginas?: boolean | Libro$paginasArgs<ExtArgs>
     progresos?: boolean | Libro$progresosArgs<ExtArgs>
@@ -2806,6 +2851,7 @@ export namespace Prisma {
       portadaUrl: string | null
       publicado: boolean
       creadoEn: Date
+      gutenbergId: number | null
     }, ExtArgs["result"]["libro"]>
     composites: {}
   }
@@ -3238,6 +3284,7 @@ export namespace Prisma {
     readonly portadaUrl: FieldRef<"Libro", 'String'>
     readonly publicado: FieldRef<"Libro", 'Boolean'>
     readonly creadoEn: FieldRef<"Libro", 'DateTime'>
+    readonly gutenbergId: FieldRef<"Libro", 'Int'>
   }
     
 
@@ -7096,7 +7143,8 @@ export namespace Prisma {
     descripcion: 'descripcion',
     portadaUrl: 'portadaUrl',
     publicado: 'publicado',
-    creadoEn: 'creadoEn'
+    creadoEn: 'creadoEn',
+    gutenbergId: 'gutenbergId'
   };
 
   export type LibroScalarFieldEnum = (typeof LibroScalarFieldEnum)[keyof typeof LibroScalarFieldEnum]
@@ -7360,6 +7408,7 @@ export namespace Prisma {
     portadaUrl?: StringNullableFilter<"Libro"> | string | null
     publicado?: BoolFilter<"Libro"> | boolean
     creadoEn?: DateTimeFilter<"Libro"> | Date | string
+    gutenbergId?: IntNullableFilter<"Libro"> | number | null
     paginas?: PaginaListRelationFilter
     progresos?: ProgresoListRelationFilter
   }
@@ -7372,12 +7421,14 @@ export namespace Prisma {
     portadaUrl?: SortOrderInput | SortOrder
     publicado?: SortOrder
     creadoEn?: SortOrder
+    gutenbergId?: SortOrderInput | SortOrder
     paginas?: PaginaOrderByRelationAggregateInput
     progresos?: ProgresoOrderByRelationAggregateInput
   }
 
   export type LibroWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    gutenbergId?: number
     AND?: LibroWhereInput | LibroWhereInput[]
     OR?: LibroWhereInput[]
     NOT?: LibroWhereInput | LibroWhereInput[]
@@ -7389,7 +7440,7 @@ export namespace Prisma {
     creadoEn?: DateTimeFilter<"Libro"> | Date | string
     paginas?: PaginaListRelationFilter
     progresos?: ProgresoListRelationFilter
-  }, "id">
+  }, "id" | "gutenbergId">
 
   export type LibroOrderByWithAggregationInput = {
     id?: SortOrder
@@ -7399,9 +7450,12 @@ export namespace Prisma {
     portadaUrl?: SortOrderInput | SortOrder
     publicado?: SortOrder
     creadoEn?: SortOrder
+    gutenbergId?: SortOrderInput | SortOrder
     _count?: LibroCountOrderByAggregateInput
+    _avg?: LibroAvgOrderByAggregateInput
     _max?: LibroMaxOrderByAggregateInput
     _min?: LibroMinOrderByAggregateInput
+    _sum?: LibroSumOrderByAggregateInput
   }
 
   export type LibroScalarWhereWithAggregatesInput = {
@@ -7415,6 +7469,7 @@ export namespace Prisma {
     portadaUrl?: StringNullableWithAggregatesFilter<"Libro"> | string | null
     publicado?: BoolWithAggregatesFilter<"Libro"> | boolean
     creadoEn?: DateTimeWithAggregatesFilter<"Libro"> | Date | string
+    gutenbergId?: IntNullableWithAggregatesFilter<"Libro"> | number | null
   }
 
   export type PaginaWhereInput = {
@@ -7728,6 +7783,7 @@ export namespace Prisma {
     portadaUrl?: string | null
     publicado?: boolean
     creadoEn?: Date | string
+    gutenbergId?: number | null
     paginas?: PaginaCreateNestedManyWithoutLibroInput
     progresos?: ProgresoCreateNestedManyWithoutLibroInput
   }
@@ -7740,6 +7796,7 @@ export namespace Prisma {
     portadaUrl?: string | null
     publicado?: boolean
     creadoEn?: Date | string
+    gutenbergId?: number | null
     paginas?: PaginaUncheckedCreateNestedManyWithoutLibroInput
     progresos?: ProgresoUncheckedCreateNestedManyWithoutLibroInput
   }
@@ -7752,6 +7809,7 @@ export namespace Prisma {
     portadaUrl?: NullableStringFieldUpdateOperationsInput | string | null
     publicado?: BoolFieldUpdateOperationsInput | boolean
     creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    gutenbergId?: NullableIntFieldUpdateOperationsInput | number | null
     paginas?: PaginaUpdateManyWithoutLibroNestedInput
     progresos?: ProgresoUpdateManyWithoutLibroNestedInput
   }
@@ -7764,6 +7822,7 @@ export namespace Prisma {
     portadaUrl?: NullableStringFieldUpdateOperationsInput | string | null
     publicado?: BoolFieldUpdateOperationsInput | boolean
     creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    gutenbergId?: NullableIntFieldUpdateOperationsInput | number | null
     paginas?: PaginaUncheckedUpdateManyWithoutLibroNestedInput
     progresos?: ProgresoUncheckedUpdateManyWithoutLibroNestedInput
   }
@@ -7776,6 +7835,7 @@ export namespace Prisma {
     portadaUrl?: string | null
     publicado?: boolean
     creadoEn?: Date | string
+    gutenbergId?: number | null
   }
 
   export type LibroUpdateManyMutationInput = {
@@ -7786,6 +7846,7 @@ export namespace Prisma {
     portadaUrl?: NullableStringFieldUpdateOperationsInput | string | null
     publicado?: BoolFieldUpdateOperationsInput | boolean
     creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    gutenbergId?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type LibroUncheckedUpdateManyInput = {
@@ -7796,6 +7857,7 @@ export namespace Prisma {
     portadaUrl?: NullableStringFieldUpdateOperationsInput | string | null
     publicado?: BoolFieldUpdateOperationsInput | boolean
     creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    gutenbergId?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type PaginaCreateInput = {
@@ -8223,6 +8285,17 @@ export namespace Prisma {
     not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
   export type PaginaListRelationFilter = {
     every?: PaginaWhereInput
     some?: PaginaWhereInput
@@ -8241,6 +8314,11 @@ export namespace Prisma {
     portadaUrl?: SortOrder
     publicado?: SortOrder
     creadoEn?: SortOrder
+    gutenbergId?: SortOrder
+  }
+
+  export type LibroAvgOrderByAggregateInput = {
+    gutenbergId?: SortOrder
   }
 
   export type LibroMaxOrderByAggregateInput = {
@@ -8251,6 +8329,7 @@ export namespace Prisma {
     portadaUrl?: SortOrder
     publicado?: SortOrder
     creadoEn?: SortOrder
+    gutenbergId?: SortOrder
   }
 
   export type LibroMinOrderByAggregateInput = {
@@ -8261,6 +8340,11 @@ export namespace Prisma {
     portadaUrl?: SortOrder
     publicado?: SortOrder
     creadoEn?: SortOrder
+    gutenbergId?: SortOrder
+  }
+
+  export type LibroSumOrderByAggregateInput = {
+    gutenbergId?: SortOrder
   }
 
   export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -8287,6 +8371,22 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedBoolFilter<$PrismaModel>
     _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type LibroScalarRelationFilter = {
@@ -8579,6 +8679,14 @@ export namespace Prisma {
 
   export type BoolFieldUpdateOperationsInput = {
     set?: boolean
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type PaginaUpdateManyWithoutLibroNestedInput = {
@@ -8890,6 +8998,33 @@ export namespace Prisma {
     _max?: NestedBoolFilter<$PrismaModel>
   }
 
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
   export type NestedEnumEstadoLecturaFilter<$PrismaModel = never> = {
     equals?: $Enums.EstadoLectura | EnumEstadoLecturaFieldRefInput<$PrismaModel>
     in?: $Enums.EstadoLectura[] | ListEnumEstadoLecturaFieldRefInput<$PrismaModel>
@@ -9134,6 +9269,7 @@ export namespace Prisma {
     portadaUrl?: string | null
     publicado?: boolean
     creadoEn?: Date | string
+    gutenbergId?: number | null
     progresos?: ProgresoCreateNestedManyWithoutLibroInput
   }
 
@@ -9145,6 +9281,7 @@ export namespace Prisma {
     portadaUrl?: string | null
     publicado?: boolean
     creadoEn?: Date | string
+    gutenbergId?: number | null
     progresos?: ProgresoUncheckedCreateNestedManyWithoutLibroInput
   }
 
@@ -9172,6 +9309,7 @@ export namespace Prisma {
     portadaUrl?: NullableStringFieldUpdateOperationsInput | string | null
     publicado?: BoolFieldUpdateOperationsInput | boolean
     creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    gutenbergId?: NullableIntFieldUpdateOperationsInput | number | null
     progresos?: ProgresoUpdateManyWithoutLibroNestedInput
   }
 
@@ -9183,6 +9321,7 @@ export namespace Prisma {
     portadaUrl?: NullableStringFieldUpdateOperationsInput | string | null
     publicado?: BoolFieldUpdateOperationsInput | boolean
     creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    gutenbergId?: NullableIntFieldUpdateOperationsInput | number | null
     progresos?: ProgresoUncheckedUpdateManyWithoutLibroNestedInput
   }
 
@@ -9227,6 +9366,7 @@ export namespace Prisma {
     portadaUrl?: string | null
     publicado?: boolean
     creadoEn?: Date | string
+    gutenbergId?: number | null
     paginas?: PaginaCreateNestedManyWithoutLibroInput
   }
 
@@ -9238,6 +9378,7 @@ export namespace Prisma {
     portadaUrl?: string | null
     publicado?: boolean
     creadoEn?: Date | string
+    gutenbergId?: number | null
     paginas?: PaginaUncheckedCreateNestedManyWithoutLibroInput
   }
 
@@ -9304,6 +9445,7 @@ export namespace Prisma {
     portadaUrl?: NullableStringFieldUpdateOperationsInput | string | null
     publicado?: BoolFieldUpdateOperationsInput | boolean
     creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    gutenbergId?: NullableIntFieldUpdateOperationsInput | number | null
     paginas?: PaginaUpdateManyWithoutLibroNestedInput
   }
 
@@ -9315,6 +9457,7 @@ export namespace Prisma {
     portadaUrl?: NullableStringFieldUpdateOperationsInput | string | null
     publicado?: BoolFieldUpdateOperationsInput | boolean
     creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    gutenbergId?: NullableIntFieldUpdateOperationsInput | number | null
     paginas?: PaginaUncheckedUpdateManyWithoutLibroNestedInput
   }
 

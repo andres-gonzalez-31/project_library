@@ -41,7 +41,7 @@ model Libro {
   portadaUrl  String?
   publicado   Boolean  @default(true)
   creadoEn    DateTime @default(now())
-
+  gutenbergId Int?     @unique
   paginas     Pagina[]
   progresos   Progreso[]
 

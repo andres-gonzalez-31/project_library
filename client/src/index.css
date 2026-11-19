@@ -116,3 +116,120 @@ body {
 .hoja-interior .hoja-texto:empty + .hoja-folio {
   display: none;
 }
+
+/* === LIBRO 3D DEL CATALOGO === */
+.libro-3d {
+  perspective: 1200px;
+  padding: 0.5rem 0;
+}
+
+.libro-3d-cuerpo {
+  position: relative;
+  aspect-ratio: 2 / 3;
+  transform-style: preserve-3d;
+  transform: rotateY(-22deg);
+  transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.3, 1);
+  filter: drop-shadow(10px 12px 18px rgba(0, 0, 0, 0.55));
+}
+
+.grupo-libro:hover .libro-3d-cuerpo {
+  transform: rotateY(-8deg) translateY(-6px);
+}
+
+.libro-3d-portada {
+  position: absolute;
+  inset: 0;
+  border-radius: 2px 5px 5px 2px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #8b4a37 0%, var(--color-cuero-oscuro) 100%);
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.4);
+}
+
+.libro-3d-lomo {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 15px;
+  transform: rotateY(90deg) translateZ(-7px);
+  transform-origin: left center;
+  background: linear-gradient(90deg, #4a241a, #6b3527);
+  border-radius: 2px 0 0 2px;
+}
+
+.libro-3d-hojas {
+  position: absolute;
+  top: 2%;
+  bottom: 2%;
+  right: 0;
+  width: 10px;
+  transform: rotateY(90deg) translateZ(calc(100% - 5px));
+  transform-origin: right center;
+  background: repeating-linear-gradient(
+    to right,
+    #f6f3ec 0px, #f6f3ec 1px,
+    #d8d2c4 1px, #d8d2c4 2px
+  );
+  border-radius: 0 2px 2px 0;
+}
+
+.libro-3d-interior {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.2rem 0.9rem 1.2rem 1.6rem;
+  text-align: center;
+  border-left: 2px solid rgba(0, 0, 0, 0.25);
+}
+
+.libro-3d-titulo {
+  font-family: var(--font-lectura);
+  color: var(--color-papel);
+  font-size: 0.98rem;
+  line-height: 1.3;
+  margin: 0;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+.libro-3d-linea {
+  width: 28px;
+  height: 1px;
+  background: rgba(244, 236, 216, 0.5);
+  margin: 0.6rem 0;
+}
+
+.libro-3d-autor {
+  font-family: var(--font-lectura);
+  color: rgba(244, 236, 216, 0.7);
+  font-size: 0.72rem;
+  font-style: italic;
+  margin: 0;
+}
+
+/* === PAPEL MAS BLANCO EN EL LECTOR === */
+.hoja {
+  background: #fbfaf6;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(123, 63, 47, 0.02) 0%, transparent 55%),
+    radial-gradient(circle at 80% 70%, rgba(123, 63, 47, 0.015) 0%, transparent 55%);
+}
+
+.hoja-interior {
+  box-shadow: inset 0 0 24px rgba(123, 63, 47, 0.08);
+}
+
+.libro .--left .hoja-interior {
+  box-shadow: inset -26px 0 30px -16px rgba(60, 40, 30, 0.35),
+              inset 0 0 24px rgba(123, 63, 47, 0.06);
+}
+
+.libro .--right .hoja-interior {
+  box-shadow: inset 26px 0 30px -16px rgba(60, 40, 30, 0.35),
+              inset 0 0 24px rgba(123, 63, 47, 0.06);
+}
+
+.hoja-texto {
+  color: #2e2820;
+}
