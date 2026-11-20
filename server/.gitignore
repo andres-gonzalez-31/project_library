@@ -1,6 +1,12 @@
-node_modules
-# Keep environment variables out of version control
-.env
+node_modules/
 
-/generated/prisma
-server/src/generated/
+# Variables de entorno: contrasena de la base y JWT_SECRET
+.env
+.env.*
+!.env.example
+
+# Cookies de las pruebas con curl (contienen tokens de sesion)
+cookies.txt
+
+# Cliente de Prisma generado (regenerar con: npx prisma generate)
+src/generated/

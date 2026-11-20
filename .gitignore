@@ -1,0 +1,43 @@
+# === Dependencias ===
+node_modules/
+
+# === Secretos: NUNCA se suben ===
+.env
+.env.*
+!.env.example
+
+# === Archivos de sesion y credenciales de pruebas ===
+cookies.txt
+*.cookies
+*.pem
+*.key
+
+# === Codigo generado (se regenera con: npx prisma generate) ===
+server/src/generated/
+
+# === Builds ===
+dist/
+build/
+.vite/
+
+# === Logs ===
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# === Sistema y editores ===
+.DS_Store
+Thumbs.db
+*.local
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# === Herramientas de agentes IA ===
+.agents/
+.claude/
+.cursor/
+.devin/
+.windsurf/
+skills-lock.json
