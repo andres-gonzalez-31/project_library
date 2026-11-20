@@ -29,4 +29,10 @@ export const api = {
   misLecturas: () => pedir('/progreso/mis-lecturas'),
   progreso: (libroId) => pedir(`/progreso/${libroId}`),
   guardarProgreso: (libroId, datos) => pedir(`/progreso/${libroId}`, { method: 'PUT', body: JSON.stringify(datos) }),
+  olvidarProgreso: (libroId) => pedir(`/progreso/${libroId}`, { method: 'DELETE' }),
+
+  buscarFuente: (q, pagina = 1) =>
+    pedir(`/fuente/buscar?q=${encodeURIComponent(q)}&pagina=${pagina}`),
+  importarLibro: (gutenbergId) =>
+    pedir('/fuente/importar', { method: 'POST', body: JSON.stringify({ gutenbergId }) }),
 };

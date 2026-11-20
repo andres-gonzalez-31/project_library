@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import HTMLFlipBook from 'react-pageflip';
 import { api } from '../api';
 import Hoja, { Portada, Contraportada } from '../componentes/Hoja';
+import PanelNotas from '../componentes/PanelNotas';
 
 export default function Lector() {
   const { id } = useParams();
@@ -17,6 +18,7 @@ export default function Lector() {
   const [error, setError] = useState('');
   const [guardando, setGuardando] = useState(false);
   const [terminado, setTerminado] = useState(false);
+  const [panelAbierto, setPanelAbierto] = useState(false);
 
   useEffect(() => {
     Promise.all([api.libro(id), api.paginas(id), api.progreso(id)])
@@ -25,12 +27,13 @@ export default function Lector() {
         setPaginas(b.paginas);
         setProgreso(c.progreso);
         setActual(c.progreso.paginaActual);
+        setTerminado(c.progreso.estado === 'TERMINADO');
       })
       .catch((e) => setError(e.message))
       .finally(() => setCargando(false));
   }, [id]);
 
-  // salta a la página guardada cuando el libro ya se montó
+  // salta a la pagina guardada cuando el libro ya se monto
   useEffect(() => {
     if (cargando || !progreso) return;
     const destino = progreso.paginaActual;
@@ -40,12 +43,26 @@ export default function Lector() {
     return () => clearTimeout(t);
   }, [cargando, progreso]);
 
-  async function pararDeLeer() {
+  // flechas del teclado para pasar pagina
+  useEffect(() => {
+    function tecla(e) {
+      if (panelAbierto) return;
+      if (e.key === 'ArrowLeft') libroRef.current?.pageFlip?.()?.flipPrev();
+      if (e.key === 'ArrowRight') libroRef.current?.pageFlip?.()?.flipNext();
+    }
+    window.addEventListener('keydown', tecla);
+    return () => window.removeEventListener('keydown', tecla);
+  }, [panelAbierto]);
+
+  async function guardar({ resumen, observaciones }) {
     setGuardando(true);
+    setError('');
     try {
       await api.guardarProgreso(id, {
         paginaActual: Math.max(1, Math.min(actual, paginas.length)),
         estado: terminado || actual >= paginas.length ? 'TERMINADO' : 'LEYENDO',
+        resumen,
+        observaciones,
       });
       navegar('/mis-lecturas');
     } catch (e) {
@@ -54,8 +71,8 @@ export default function Lector() {
     }
   }
 
-  if (cargando) return <Pantalla texto="Abriendo el libro..." />;
-  if (error) return <Pantalla texto={error} />;
+  if (cargando) return <Pantalla texto="Abriendo el libro…" />;
+  if (error && !libro) return <Pantalla texto={error} />;
   if (!libro) return <Pantalla texto="Libro no encontrado" />;
 
   const hojas = [
@@ -64,11 +81,9 @@ export default function Lector() {
       <Hoja key={p.numero} numero={p.numero} contenido={p.contenido} total={paginas.length} />
     )),
   ];
-
   if ((hojas.length + 1) % 2 !== 0) {
     hojas.push(<Hoja key="relleno" numero={0} contenido="" total={paginas.length} />);
   }
-
   hojas.push(<Contraportada key="fin" />);
 
   const porcentaje = terminado
@@ -77,47 +92,53 @@ export default function Lector() {
 
   function alVoltear(e) {
     const indice = e.data;
-    const llegoAlFinal = indice > paginas.length;
-    setTerminado(llegoAlFinal);
+    setTerminado(indice > paginas.length);
     setActual(Math.max(1, Math.min(indice, paginas.length)));
   }
 
-
   return (
-    <div className="min-h-screen flex flex-col items-center py-4 px-2">
-      <div className="w-full max-w-md mb-4 px-2">
-        <div className="flex items-center justify-between mb-2 gap-3">
-          <h1 className="text-texto text-sm sm:text-base truncate"
-              style={{ fontFamily: 'var(--font-lectura)' }}>
+    <div className="flex min-h-screen flex-col items-center px-3 py-4">
+      {/* barra superior */}
+      <div className="mb-5 w-full max-w-2xl">
+        <div className="mb-2.5 flex items-center gap-3">
+          <Link
+            to="/"
+            className="shrink-0 rounded-md px-2 py-1 text-sm text-texto-ter transition-colors hover:text-texto"
+            aria-label="Volver al estante"
+          >
+            ‹
+          </Link>
+          <h1 className="min-w-0 flex-1 truncate text-sm font-medium text-texto">
             {libro.titulo}
           </h1>
-          <span className="text-texto-sec text-xs whitespace-nowrap">
-            {terminado ? '✓ Terminado' : `${porcentaje}%`}
+          <span className="shrink-0 text-xs tabular-nums text-texto-sec">
+            {terminado ? 'Leído' : `${porcentaje}%`}
           </span>
         </div>
 
-        <div className="h-1.5 rounded-full bg-borde overflow-hidden">
+        <div className="h-1 overflow-hidden rounded-full bg-borde">
           <div
-            className="h-full rounded-full bg-ambar transition-all duration-500"
+            className={`h-full rounded-full transition-all duration-500 ${terminado ? 'bg-exito' : 'bg-ambar'}`}
             style={{ width: `${porcentaje}%` }}
           />
         </div>
 
-        <p className="text-texto-ter text-xs mt-1.5">
+        <p className="mt-1.5 text-xs tabular-nums text-texto-ter">
           Página {actual} de {paginas.length}
         </p>
       </div>
 
+      {/* el libro */}
       <div className="libro-sombra">
         <HTMLFlipBook
           ref={libroRef}
-          width={340}
-          height={480}
+          width={400}
+          height={560}
           size="stretch"
           minWidth={280}
-          maxWidth={420}
+          maxWidth={520}
           minHeight={400}
-          maxHeight={580}
+          maxHeight={720}
           maxShadowOpacity={0.55}
           showCover={true}
           mobileScrollSupport={true}
@@ -133,41 +154,59 @@ export default function Lector() {
         </HTMLFlipBook>
       </div>
 
-      <div className="mt-5 flex gap-3">
+      {/* controles */}
+      <div className="mt-6 flex items-center gap-2">
         <button
           onClick={() => libroRef.current?.pageFlip()?.flipPrev()}
-          className="px-4 py-2 rounded bg-elevado text-texto-sec text-sm hover:bg-borde-vivo transition"
+          aria-label="Página anterior"
+          className="rounded-lg border border-borde px-3.5 py-2 text-sm text-texto-sec
+                     transition-colors hover:border-borde-vivo hover:text-texto"
         >
-          ‹ Anterior
+          ‹
         </button>
 
         <button
-          onClick={pararDeLeer}
-          disabled={guardando}
-          className="px-5 py-2 rounded bg-ambar text-sobre-ambar text-sm font-medium
-                     hover:bg-ambar-alto disabled:opacity-50 transition"
+          onClick={() => setPanelAbierto(true)}
+          className="rounded-lg bg-ambar px-5 py-2 text-sm font-semibold text-sobre-ambar
+                     transition-colors hover:bg-ambar-alto"
         >
-          {guardando ? 'Guardando...' : 'Parar de leer'}
+          Parar de leer
         </button>
 
         <button
           onClick={() => libroRef.current?.pageFlip()?.flipNext()}
-          className="px-4 py-2 rounded bg-elevado text-texto-sec text-sm hover:bg-borde-vivo transition"
+          aria-label="Página siguiente"
+          className="rounded-lg border border-borde px-3.5 py-2 text-sm text-texto-sec
+                     transition-colors hover:border-borde-vivo hover:text-texto"
         >
-          Siguiente ›
+          ›
         </button>
       </div>
 
-      <p className="text-texto-ter text-xs mt-3 text-center">
-        Arrastra la esquina de la hoja para pasar la página
+      <p className="mt-3 text-center text-xs text-texto-ter">
+        Arrastra la esquina de la hoja, o usa las flechas del teclado
       </p>
+
+      {panelAbierto && (
+        <PanelNotas
+          titulo={libro.titulo}
+          pagina={actual}
+          total={paginas.length}
+          terminado={terminado}
+          inicial={progreso}
+          guardando={guardando}
+          error={error}
+          onGuardar={guardar}
+          onCancelar={() => setPanelAbierto(false)}
+        />
+      )}
     </div>
   );
 }
 
 function Pantalla({ texto }) {
   return (
-    <div className="min-h-screen flex items-center justify-center text-texto-sec px-4 text-center">
+    <div className="flex min-h-screen items-center justify-center px-4 text-center text-sm text-texto-sec">
       {texto}
     </div>
   );

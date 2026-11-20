@@ -5,6 +5,7 @@ import Login from './paginas/Login';
 import Registro from './paginas/Registro';
 import Catalogo from './paginas/Catalogo';
 import Lector from './paginas/Lector';
+import MisLecturas from './paginas/MisLecturas';
 import EnObra from './paginas/EnObra';
 
 const privada = (el) => <RutaPrivada>{el}</RutaPrivada>;
@@ -29,15 +30,7 @@ export default function App() {
               />
             )}
           />
-          <Route
-            path="/mis-lecturas"
-            element={privada(
-              <EnObra
-                titulo="Mis lecturas"
-                texto="Aquí van los libros que empezaste, tu progreso y tus notas. En construcción."
-              />
-            )}
-          />
+          <Route path="/mis-lecturas" element={privada(<MisLecturas />)} />
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

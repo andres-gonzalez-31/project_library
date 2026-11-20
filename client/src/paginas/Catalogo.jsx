@@ -76,7 +76,7 @@ export default function Catalogo() {
         )}
 
         {cargando && (
-          <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-5">
+          <div className="grid grid-cols-2 gap-x-5 gap-y-7 sm:grid-cols-3 lg:grid-cols-4">
             {Array.from({ length: 5 }).map((_, i) => (
               <div key={i} className="animate-pulse">
                 <div className="aspect-[2/3] rounded bg-elevado" />
@@ -108,7 +108,7 @@ export default function Catalogo() {
         )}
 
         {!cargando && libros.length > 0 && (
-          <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-5">
+          <div className="grid grid-cols-2 gap-x-5 gap-y-7 sm:grid-cols-3 lg:grid-cols-4">
             {libros.map((l) => (
               <TarjetaLibro key={l.id} libro={l} progreso={progresoPorLibro[l.id]} />
             ))}

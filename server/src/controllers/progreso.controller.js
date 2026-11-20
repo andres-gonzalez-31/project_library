@@ -8,12 +8,22 @@ export async function misLecturas(req, res, next) {
       where: { usuarioId: req.usuario.id },
       select: {
         paginaActual: true, estado: true, resumen: true, observaciones: true, actualizadoEn: true,
-        libro: { select: { id: true, titulo: true, autor: true, portadaUrl: true } },
+        libro: {
+          select: {
+            id: true, titulo: true, autor: true, portadaUrl: true,
+            _count: { select: { paginas: true } },
+          },
+        },
       },
       orderBy: { actualizadoEn: 'desc' },
     });
 
-    res.json({ lecturas });
+    const salida = lecturas.map(({ libro, ...l }) => ({
+      ...l,
+      libro: { ...libro, totalPaginas: libro._count.paginas, _count: undefined },
+    }));
+
+    res.json({ lecturas: salida });
   } catch (err) { next(err); }
 }
 
