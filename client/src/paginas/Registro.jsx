@@ -5,7 +5,7 @@ import { useAuth } from '../auth';
 import Campo from '../componentes/Campo';
 
 const REGLAS = [
-  { prueba: (v) => v.length >= 10, texto: 'Mínimo 10 caracteres' },
+  { prueba: (v) => v.length >= 10, texto: 'Al menos 10 caracteres' },
   { prueba: (v) => /[a-z]/.test(v), texto: 'Una minúscula' },
   { prueba: (v) => /[A-Z]/.test(v), texto: 'Una mayúscula' },
   { prueba: (v) => /[0-9]/.test(v), texto: 'Un número' },
@@ -19,7 +19,8 @@ export default function Registro() {
   const [enviando, setEnviando] = useState(false);
 
   const cambiar = (e) => setForm({ ...form, [e.target.name]: e.target.value });
-  const valida = REGLAS.every((r) => r.prueba(form.password));
+  const cumplidas = REGLAS.filter((r) => r.prueba(form.password)).length;
+  const valida = cumplidas === REGLAS.length;
 
   async function enviar(e) {
     e.preventDefault();
@@ -37,48 +38,103 @@ export default function Registro() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-8">
-      <form onSubmit={enviar} className="w-full max-w-sm bg-cuero-oscuro/40 p-8 rounded-lg
-                                         border border-cuero/50 shadow-2xl">
-        <h1 className="text-3xl text-papel mb-6 text-center"
-            style={{ fontFamily: 'var(--font-lectura)' }}>
-          Crear cuenta
-        </h1>
+    <div className="flex min-h-screen items-center justify-center px-4 py-10">
+      <div className="w-full max-w-sm">
+        <div className="mb-7 text-center">
+          <span className="mx-auto mb-3 grid h-11 w-11 place-items-center rounded-xl
+                           bg-ambar text-lg font-bold text-sobre-ambar">
+            B
+          </span>
+          <h1 className="text-xl font-semibold tracking-tight text-texto">Crear cuenta</h1>
+          <p className="mt-1 text-sm text-texto-sec">Tu progreso y tus notas quedan guardados</p>
+        </div>
 
-        <Campo etiqueta="Nombre" name="nombre" value={form.nombre}
-               onChange={cambiar} required minLength={2} />
+        <form
+          onSubmit={enviar}
+          className="rounded-xl border border-borde bg-panel p-6 shadow-xl shadow-black/30"
+        >
+          <Campo
+            etiqueta="Nombre"
+            name="nombre"
+            value={form.nombre}
+            onChange={cambiar}
+            placeholder="Cómo quieres que te llamemos"
+            required
+            minLength={2}
+            autoFocus
+          />
 
-        <Campo etiqueta="Correo" type="email" name="email" value={form.email}
-               onChange={cambiar} required autoComplete="email" />
+          <Campo
+            etiqueta="Correo"
+            type="email"
+            name="email"
+            value={form.email}
+            onChange={cambiar}
+            placeholder="tucorreo@ejemplo.com"
+            required
+            autoComplete="email"
+          />
 
-        <Campo etiqueta="Contraseña" type="password" name="password" value={form.password}
-               onChange={cambiar} required autoComplete="new-password" />
+          <Campo
+            etiqueta="Contraseña"
+            type="password"
+            name="password"
+            value={form.password}
+            onChange={cambiar}
+            placeholder="Una que no uses en otro lado"
+            required
+            autoComplete="new-password"
+          />
 
-        <ul className="text-xs mb-4 space-y-1">
-          {REGLAS.map((r) => {
-            const ok = r.prueba(form.password);
-            return (
-              <li key={r.texto} className={ok ? 'text-green-300' : 'text-papel/50'}>
-                {ok ? '✓' : '○'} {r.texto}
-              </li>
-            );
-          })}
-        </ul>
+          <div className="mb-5">
+            <div className="mb-2 flex gap-1" aria-hidden="true">
+              {REGLAS.map((_, i) => (
+                <span
+                  key={i}
+                  className={`h-1 flex-1 rounded-full transition-colors ${
+                    i < cumplidas ? 'bg-exito' : 'bg-borde'
+                  }`}
+                />
+              ))}
+            </div>
+            <ul className="grid grid-cols-2 gap-x-3 gap-y-1">
+              {REGLAS.map((r) => {
+                const ok = r.prueba(form.password);
+                return (
+                  <li
+                    key={r.texto}
+                    className={`text-[0.7rem] ${ok ? 'text-exito' : 'text-texto-ter'}`}
+                  >
+                    {ok ? '✓' : '○'} {r.texto}
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
 
-        {error && (
-          <p className="text-red-300 text-sm mb-4 bg-red-900/30 p-2 rounded">{error}</p>
-        )}
+          {error && (
+            <p className="mb-4 rounded-lg border border-alerta/30 bg-alerta/10 px-3 py-2 text-xs text-alerta">
+              {error}
+            </p>
+          )}
 
-        <button type="submit" disabled={enviando || !valida}
-          className="w-full py-2 rounded bg-cuero text-papel font-medium
-                     hover:bg-cuero-oscuro disabled:opacity-50 transition">
-          {enviando ? 'Creando...' : 'Crear cuenta'}
-        </button>
+          <button
+            type="submit"
+            disabled={enviando || !valida}
+            className="w-full rounded-lg bg-ambar py-2.5 text-sm font-semibold text-sobre-ambar
+                       transition-colors hover:bg-ambar-alto disabled:opacity-40"
+          >
+            {enviando ? 'Creando…' : 'Crear cuenta'}
+          </button>
+        </form>
 
-        <p className="text-center text-papel/70 text-sm mt-4">
-          ¿Ya tienes cuenta? <Link to="/login" className="underline hover:text-papel">Entra</Link>
+        <p className="mt-5 text-center text-sm text-texto-sec">
+          ¿Ya tienes cuenta?{' '}
+          <Link to="/login" className="font-medium text-ambar hover:text-ambar-alto">
+            Entrar
+          </Link>
         </p>
-      </form>
+      </div>
     </div>
   );
 }

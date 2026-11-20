@@ -87,23 +87,23 @@ export default function Lector() {
     <div className="min-h-screen flex flex-col items-center py-4 px-2">
       <div className="w-full max-w-md mb-4 px-2">
         <div className="flex items-center justify-between mb-2 gap-3">
-          <h1 className="text-papel/90 text-sm sm:text-base truncate"
+          <h1 className="text-texto text-sm sm:text-base truncate"
               style={{ fontFamily: 'var(--font-lectura)' }}>
             {libro.titulo}
           </h1>
-          <span className="text-papel/60 text-xs whitespace-nowrap">
+          <span className="text-texto-sec text-xs whitespace-nowrap">
             {terminado ? '✓ Terminado' : `${porcentaje}%`}
           </span>
         </div>
 
-        <div className="h-1.5 rounded-full bg-papel/15 overflow-hidden">
+        <div className="h-1.5 rounded-full bg-borde overflow-hidden">
           <div
-            className="h-full rounded-full bg-papel/70 transition-all duration-500"
+            className="h-full rounded-full bg-ambar transition-all duration-500"
             style={{ width: `${porcentaje}%` }}
           />
         </div>
 
-        <p className="text-papel/40 text-xs mt-1.5">
+        <p className="text-texto-ter text-xs mt-1.5">
           Página {actual} de {paginas.length}
         </p>
       </div>
@@ -136,7 +136,7 @@ export default function Lector() {
       <div className="mt-5 flex gap-3">
         <button
           onClick={() => libroRef.current?.pageFlip()?.flipPrev()}
-          className="px-4 py-2 rounded bg-cuero-oscuro/60 text-papel/80 text-sm hover:bg-cuero transition"
+          className="px-4 py-2 rounded bg-elevado text-texto-sec text-sm hover:bg-borde-vivo transition"
         >
           ‹ Anterior
         </button>
@@ -144,21 +144,21 @@ export default function Lector() {
         <button
           onClick={pararDeLeer}
           disabled={guardando}
-          className="px-5 py-2 rounded bg-cuero text-papel text-sm font-medium
-                     hover:bg-cuero-oscuro disabled:opacity-50 transition"
+          className="px-5 py-2 rounded bg-ambar text-sobre-ambar text-sm font-medium
+                     hover:bg-ambar-alto disabled:opacity-50 transition"
         >
           {guardando ? 'Guardando...' : 'Parar de leer'}
         </button>
 
         <button
           onClick={() => libroRef.current?.pageFlip()?.flipNext()}
-          className="px-4 py-2 rounded bg-cuero-oscuro/60 text-papel/80 text-sm hover:bg-cuero transition"
+          className="px-4 py-2 rounded bg-elevado text-texto-sec text-sm hover:bg-borde-vivo transition"
         >
           Siguiente ›
         </button>
       </div>
 
-      <p className="text-papel/35 text-xs mt-3 text-center">
+      <p className="text-texto-ter text-xs mt-3 text-center">
         Arrastra la esquina de la hoja para pasar la página
       </p>
     </div>
@@ -167,7 +167,7 @@ export default function Lector() {
 
 function Pantalla({ texto }) {
   return (
-    <div className="min-h-screen flex items-center justify-center text-papel/60 px-4 text-center">
+    <div className="min-h-screen flex items-center justify-center text-texto-sec px-4 text-center">
       {texto}
     </div>
   );

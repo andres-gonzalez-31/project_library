@@ -18,7 +18,10 @@ export async function listarLibros(req, res, next) {
     const [libros, total] = await Promise.all([
       prisma.libro.findMany({
         where,
-        select: { id: true, titulo: true, autor: true, descripcion: true, portadaUrl: true },
+        select: {
+          id: true, titulo: true, autor: true, descripcion: true, portadaUrl: true,
+          _count: { select: { paginas: true } },
+        },
         orderBy: { titulo: 'asc' },
         skip: (pagina - 1) * limite,
         take: limite,
@@ -26,7 +29,9 @@ export async function listarLibros(req, res, next) {
       prisma.libro.count({ where }),
     ]);
 
-    res.json({ libros, total, pagina, totalPaginas: Math.ceil(total / limite) });
+    const salida = libros.map(({ _count, ...l }) => ({ ...l, totalPaginas: _count.paginas }));
+
+    res.json({ libros: salida, total, pagina, totalPaginas: Math.ceil(total / limite) });
   } catch (err) {
     if (err.name === 'ZodError') return res.status(400).json({ error: 'Parámetros inválidos' });
     next(err);

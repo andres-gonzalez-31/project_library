@@ -27,34 +27,67 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4">
-      <form onSubmit={enviar} className="w-full max-w-sm bg-cuero-oscuro/40 p-8 rounded-lg
-                                         border border-cuero/50 shadow-2xl">
-        <h1 className="text-3xl text-papel mb-6 text-center"
-            style={{ fontFamily: 'var(--font-lectura)' }}>
-          Biblioteca
-        </h1>
+    <div className="flex min-h-screen items-center justify-center px-4 py-10">
+      <div className="w-full max-w-sm">
+        <div className="mb-7 text-center">
+          <span className="mx-auto mb-3 grid h-11 w-11 place-items-center rounded-xl
+                           bg-ambar text-lg font-bold text-sobre-ambar">
+            B
+          </span>
+          <h1 className="text-xl font-semibold tracking-tight text-texto">Biblioteca</h1>
+          <p className="mt-1 text-sm text-texto-sec">Entra para seguir leyendo</p>
+        </div>
 
-        <Campo etiqueta="Correo" type="email" name="email" value={form.email}
-               onChange={cambiar} required autoComplete="email" />
+        <form
+          onSubmit={enviar}
+          className="rounded-xl border border-borde bg-panel p-6 shadow-xl shadow-black/30"
+        >
+          <Campo
+            etiqueta="Correo"
+            type="email"
+            name="email"
+            value={form.email}
+            onChange={cambiar}
+            placeholder="tucorreo@ejemplo.com"
+            required
+            autoComplete="email"
+            autoFocus
+          />
 
-        <Campo etiqueta="Contraseña" type="password" name="password" value={form.password}
-               onChange={cambiar} required autoComplete="current-password" />
+          <Campo
+            etiqueta="Contraseña"
+            type="password"
+            name="password"
+            value={form.password}
+            onChange={cambiar}
+            placeholder="Tu contraseña"
+            required
+            autoComplete="current-password"
+          />
 
-        {error && (
-          <p className="text-red-300 text-sm mb-4 bg-red-900/30 p-2 rounded">{error}</p>
-        )}
+          {error && (
+            <p className="mb-4 rounded-lg border border-alerta/30 bg-alerta/10 px-3 py-2 text-xs text-alerta">
+              {error}
+            </p>
+          )}
 
-        <button type="submit" disabled={enviando}
-          className="w-full py-2 rounded bg-cuero text-papel font-medium
-                     hover:bg-cuero-oscuro disabled:opacity-50 transition">
-          {enviando ? 'Entrando...' : 'Entrar'}
-        </button>
+          <button
+            type="submit"
+            disabled={enviando}
+            className="w-full rounded-lg bg-ambar py-2.5 text-sm font-semibold text-sobre-ambar
+                       transition-colors hover:bg-ambar-alto disabled:opacity-50"
+          >
+            {enviando ? 'Entrando…' : 'Entrar'}
+          </button>
+        </form>
 
-        <p className="text-center text-papel/70 text-sm mt-4">
-          ¿Sin cuenta? <Link to="/registro" className="underline hover:text-papel">Regístrate</Link>
+        <p className="mt-5 text-center text-sm text-texto-sec">
+          ¿Aún no tienes cuenta?{' '}
+          <Link to="/registro" className="font-medium text-ambar hover:text-ambar-alto">
+            Crear una
+          </Link>
         </p>
-      </form>
+      </div>
     </div>
   );
 }
