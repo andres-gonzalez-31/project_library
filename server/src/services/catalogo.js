@@ -1,4 +1,5 @@
 import { prisma } from '../config/prisma.js';
+import { rutasDePortada } from './espejos.js';
 
 /**
  * Busqueda contra la copia local del catalogo de Project Gutenberg.
@@ -52,7 +53,7 @@ export async function buscarEnCatalogo(consulta, pagina = 1) {
       titulo: f.titulo,
       autor: f.autor,
       idiomas: [f.idioma],
-      portadaUrl: `https://www.gutenberg.org/cache/epub/${f.gutenbergId}/pg${f.gutenbergId}.cover.medium.jpg`,
+      portadaUrl: rutasDePortada(f.gutenbergId)[0],
     })),
   };
 }

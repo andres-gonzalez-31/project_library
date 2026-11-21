@@ -11,15 +11,7 @@
  *   3. null -> el frontend dibuja el respaldo tipografico
  */
 
-const HOSTS_PERMITIDOS = new Set([
-  'www.gutenberg.org',
-  'gutenberg.org',
-  'covers.openlibrary.org',
-  'openlibrary.org',
-]);
-
-const UA =
-  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36';
+import { HOSTS_PERMITIDOS, UA, rutasDePortada } from './espejos.js';
 
 // Una portada real pesa bastante mas que esto. Por debajo es un
 // marcador de posicion o una imagen rota.
@@ -79,7 +71,7 @@ export async function verificarImagen(url, msTope = 8000) {
 }
 
 export function portadaGutenberg(gutenbergId) {
-  return `https://www.gutenberg.org/cache/epub/${gutenbergId}/pg${gutenbergId}.cover.medium.jpg`;
+  return rutasDePortada(gutenbergId)[0];
 }
 
 /**
@@ -125,8 +117,10 @@ async function portadaOpenLibrary(titulo, autor) {
  */
 export async function resolverPortada({ gutenbergId, titulo, autor }) {
   if (gutenbergId) {
-    const dePG = await verificarImagen(portadaGutenberg(gutenbergId));
-    if (dePG) return { url: dePG, fuente: 'gutenberg' };
+    for (const ruta of rutasDePortada(gutenbergId)) {
+      const dePG = await verificarImagen(ruta);
+      if (dePG) return { url: dePG, fuente: 'gutenberg' };
+    }
   }
 
   if (titulo) {

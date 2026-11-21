@@ -9,10 +9,8 @@
  */
 import 'dotenv/config';
 import { prisma } from '../src/config/prisma.js';
+import { rutasDeCatalogo, primeraQueResponda } from '../src/services/espejos.js';
 
-const URL_CSV = 'https://www.gutenberg.org/cache/epub/feeds/pg_catalog.csv';
-const UA =
-  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36';
 const LOTE = 1000;
 
 /** Parser CSV segun RFC 4180: respeta comillas, comas dentro de campos y "" escapadas. */
@@ -99,20 +97,15 @@ export function filasARegistros(filas) {
 
 async function main() {
   console.log('Descargando el catálogo de Project Gutenberg…');
+  console.log('  (probando los espejos oficiales, uno por uno)');
 
-  const ctrl = new AbortController();
-  const t = setTimeout(() => ctrl.abort(), 120000);
+  const { cuerpo: csv, host } = await primeraQueResponda(rutasDeCatalogo(), {
+    tipo: 'texto',
+    msTope: 180000,
+    minimo: 100000,
+  });
 
-  let csv;
-  try {
-    const res = await fetch(URL_CSV, { signal: ctrl.signal, headers: { 'User-Agent': UA } });
-    if (!res.ok) throw new Error(`Project Gutenberg respondió ${res.status}`);
-    csv = await res.text();
-  } finally {
-    clearTimeout(t);
-  }
-
-  console.log(`  ${(csv.length / 1048576).toFixed(1)} MB descargados`);
+  console.log(`  ${(csv.length / 1048576).toFixed(1)} MB desde ${host}`);
 
   const registros = filasARegistros(parsearCSV(csv));
   if (!registros.length) throw new Error('El catálogo llegó vacío');

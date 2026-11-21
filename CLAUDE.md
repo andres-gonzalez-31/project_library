@@ -30,8 +30,8 @@ llamada nueva se agrega ahí, no suelta en los componentes.
 3. **El `usuarioId` sale siempre del token**, nunca del cuerpo de la petición.
    Tomarlo del body abre un IDOR.
 4. **Las fuentes externas pasan por lista blanca de dominios** en
-   `services/gutendex.js` y `services/portadas.js`. Nunca un `fetch` a una
-   URL que venga del usuario.
+   `services/espejos.js`. Nunca un `fetch` a una URL que venga del usuario.
+   Todo lo que sale a internet pasa por `primeraQueResponda`.
 5. **Mensajes de error ambiguos en auth.** "Credenciales inválidas" tanto si el
    correo no existe como si la clave está mala.
 6. **Solo dominio público.** Gutenberg y Open Library. Nada con derechos vigentes.
@@ -39,8 +39,9 @@ llamada nueva se agrega ahí, no suelta en los componentes.
    resuelven y validan **al importar**, jamás al pintar la grilla.
 8. **La búsqueda NO sale a internet.** Va contra `CatalogoFuente`, una copia
    local del catálogo de Gutenberg que se baja con `npm run catalogo`.
-   Gutendex se cayó con 503 tres veces en desarrollo; no se vuelve a depender
-   de él. El texto del libro sí se baja en vivo, al importar.
+9. **gutenberg.org bloquea robots** y responde 503 a los programas. Su política
+   pide usar espejos: `aleph.pglaf.org` primero, luego `gutenberg.pglaf.org` y
+   Waterloo; `www.gutenberg.org` queda de último recurso. Nunca pegarle directo.
 
 ## Sistema visual — "lámpara de noche"
 

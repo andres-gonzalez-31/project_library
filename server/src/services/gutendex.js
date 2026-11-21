@@ -1,79 +1,16 @@
 /**
  * Descarga el texto de un libro desde Project Gutenberg.
  *
- * Va DIRECTO a gutenberg.org, sin intermediarios: Gutendex se cayo con
- * 503 tres veces durante el desarrollo y la app no puede depender de el.
- * Gutenberg guarda los .txt en tres rutas distintas segun la epoca del
- * libro, asi que se prueban en orden.
+ * gutenberg.org bloquea el acceso automatizado (responde 503), asi que
+ * se usan sus espejos oficiales. Ver services/espejos.js.
  */
-
-const HOSTS_PERMITIDOS = new Set(['www.gutenberg.org', 'gutenberg.org']);
-
-const UA =
-  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36';
-
-function validarUrl(url) {
-  let u;
-  try {
-    u = new URL(url);
-  } catch {
-    throw new Error('Origen no permitido');
-  }
-  if (u.protocol !== 'https:') throw new Error('Origen no permitido');
-  if (!HOSTS_PERMITIDOS.has(u.hostname)) throw new Error('Origen no permitido');
-  return u;
-}
-
-async function traerTexto(url, intento = 1) {
-  const u = validarUrl(url);
-  const ctrl = new AbortController();
-  const t = setTimeout(() => ctrl.abort(), 30000);
-
-  try {
-    const res = await fetch(u, {
-      signal: ctrl.signal,
-      redirect: 'follow',
-      headers: { 'User-Agent': UA, Accept: 'text/plain, */*' },
-    });
-
-    if ((res.status === 503 || res.status === 429) && intento < 3) {
-      clearTimeout(t);
-      await new Promise((r) => setTimeout(r, 1500 * intento));
-      return traerTexto(url, intento + 1);
-    }
-
-    if (!res.ok) throw new Error(`Gutenberg respondió ${res.status}`);
-    return res.text();
-  } finally {
-    clearTimeout(t);
-  }
-}
-
-function rutasDe(id) {
-  return [
-    `https://www.gutenberg.org/cache/epub/${id}/pg${id}.txt`,
-    `https://www.gutenberg.org/files/${id}/${id}-0.txt`,
-    `https://www.gutenberg.org/files/${id}/${id}.txt`,
-    `https://www.gutenberg.org/ebooks/${id}.txt.utf-8`,
-  ];
-}
+import { rutasDeTexto, primeraQueResponda } from './espejos.js';
 
 export async function obtenerDeFuente(gutenbergId, metadatos = {}) {
-  let crudo = null;
-  let ultimo = '';
-
-  for (const ruta of rutasDe(gutenbergId)) {
-    try {
-      const txt = await traerTexto(ruta);
-      if (txt && txt.length > 1000) { crudo = txt; break; }
-    } catch (e) {
-      ultimo = e.message;
-    }
-  }
-
-  if (!crudo) {
-    throw new Error(ultimo || 'Ese libro no tiene versión en texto plano');
-  }
+  const { cuerpo: crudo, host } = await primeraQueResponda(rutasDeTexto(gutenbergId), {
+    tipo: 'texto',
+    minimo: 1000,
+  });
 
   const cabecera = leerCabecera(crudo, gutenbergId);
   const titulo = (metadatos.titulo || cabecera.titulo).slice(0, 200);
@@ -85,6 +22,7 @@ export async function obtenerDeFuente(gutenbergId, metadatos = {}) {
     autor,
     descripcion: `Obra de dominio público de ${autor}, publicada por Project Gutenberg.`.slice(0, 600),
     paginas: partirEnPaginas(limpiarTexto(crudo)),
+    espejo: host,
   };
 }
 
