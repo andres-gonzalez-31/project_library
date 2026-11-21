@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { prisma } from '../config/prisma.js';
 import { buscarEnFuente, obtenerDeFuente } from '../services/gutendex.js';
+import { resolverPortada } from '../services/portadas.js';
 import { registrarAuditoria } from '../middlewares/auditoria.js';
 
 const buscarSchema = z.object({
@@ -46,6 +47,15 @@ export async function importarLibro(req, res, next) {
     const datos = await obtenerDeFuente(gutenbergId);
     if (!datos.paginas.length) return res.status(422).json({ error: 'No se pudo extraer el contenido' });
 
+    // La portada se resuelve y se VERIFICA aqui, una sola vez. Si no
+    // existe queda en null y el frontend dibuja el respaldo tipografico;
+    // asi nunca aparece un cuadro roto en el estante.
+    const portada = await resolverPortada({
+      gutenbergId: datos.gutenbergId,
+      titulo: datos.titulo,
+      autor: datos.autor,
+    });
+
     const libro = await prisma.$transaction(async (tx) => {
       const nuevo = await tx.libro.create({
         data: {
@@ -53,7 +63,7 @@ export async function importarLibro(req, res, next) {
           titulo: datos.titulo,
           autor: datos.autor,
           descripcion: datos.descripcion,
-          portadaUrl: datos.portadaUrl,
+          portadaUrl: portada.url,
         },
       });
 
@@ -66,10 +76,10 @@ export async function importarLibro(req, res, next) {
 
     await registrarAuditoria({
       req, usuarioId: req.usuario.id, accion: 'IMPORTAR_LIBRO', exito: true,
-      detalle: `${datos.titulo} (${datos.paginas.length} págs)`,
+      detalle: `${datos.titulo} (${datos.paginas.length} págs, portada: ${portada.fuente})`,
     });
 
-    res.status(201).json({ libro, paginas: datos.paginas.length });
+    res.status(201).json({ libro, paginas: datos.paginas.length, portada: portada.fuente });
   } catch (err) {
     if (err.name === 'ZodError') return res.status(400).json({ error: 'Identificador inválido' });
     await registrarAuditoria({ req, usuarioId: req.usuario?.id, accion: 'IMPORTAR_LIBRO', exito: false, detalle: err.message });

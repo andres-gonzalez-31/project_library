@@ -6,7 +6,7 @@ import Registro from './paginas/Registro';
 import Catalogo from './paginas/Catalogo';
 import Lector from './paginas/Lector';
 import MisLecturas from './paginas/MisLecturas';
-import EnObra from './paginas/EnObra';
+import Explorar from './paginas/Explorar';
 
 const privada = (el) => <RutaPrivada>{el}</RutaPrivada>;
 
@@ -21,15 +21,7 @@ export default function App() {
           <Route path="/" element={privada(<Catalogo />)} />
           <Route path="/leer/:id" element={privada(<Lector />)} />
 
-          <Route
-            path="/explorar"
-            element={privada(
-              <EnObra
-                titulo="Explorar"
-                texto="Aquí vas a buscar clásicos de dominio público y añadirlos a tu estante. En construcción."
-              />
-            )}
-          />
+          <Route path="/explorar" element={privada(<Explorar />)} />
           <Route path="/mis-lecturas" element={privada(<MisLecturas />)} />
 
           <Route path="*" element={<Navigate to="/" replace />} />
