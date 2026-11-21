@@ -24,6 +24,7 @@ cp .env.example .env     # y rellena DATABASE_URL y JWT_SECRET
 npm install              # genera el cliente de Prisma automáticamente
 npx prisma migrate deploy
 npm run seed             # mete dos libros de prueba
+npm run catalogo         # baja el catálogo de Gutenberg (una vez, ~2 min)
 npm run dev              # queda escuchando en :4000
 ```
 
@@ -54,6 +55,7 @@ npm run dev              # abre en :5173
 | `ECONNREFUSED` al llamar la API | El backend no está corriendo. Terminal 1, `npm run dev` |
 | `No autenticado` en todo | La cookie de sesión venció (dura 2 h). Vuelve a entrar |
 | `Cuenta bloqueada temporalmente` | 5 intentos fallidos. Espera 15 min, o pon `bloqueadoHasta` en `NULL` en Prisma Studio |
+| `El catálogo todavía no está descargado` | `cd server && npm run catalogo` |
 
 Ver la base de datos por dentro: `cd server && npx prisma studio`
 
@@ -76,7 +78,7 @@ server/                  backend Express
   src/middlewares/       autenticación, auditoría, errores
   src/routes/            rutas de la API
   src/schemas/           validación con Zod
-  src/services/          consumo de fuentes externas (Gutendex)
+  src/services/          catálogo local, descarga de textos y portadas
 ```
 
 ---

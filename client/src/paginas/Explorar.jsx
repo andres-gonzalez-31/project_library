@@ -5,6 +5,7 @@ import Encabezado from '../componentes/Encabezado';
 import Portada from '../componentes/Portada';
 
 const SUGERENCIAS = ['Cervantes', 'Kafka', 'Poe', 'Verne', 'Dickens', 'Austen', 'Shelley'];
+const AVISO_CATALOGO = 'catálogo todavía no está descargado';
 
 const IDIOMAS = {
   es: 'Español', en: 'Inglés', fr: 'Francés', de: 'Alemán',
@@ -100,7 +101,24 @@ export default function Explorar() {
           ))}
         </div>
 
-        {error && (
+        {error && error.includes(AVISO_CATALOGO) && (
+          <div className="rounded-xl border border-ambar/30 bg-ambar/5 px-5 py-6">
+            <h2 className="text-sm font-semibold text-texto">Falta descargar el catálogo</h2>
+            <p className="mt-1.5 max-w-xl text-sm text-texto-sec">
+              La búsqueda usa una copia local de las 78.000 obras de Project Gutenberg,
+              para no depender de que su servidor esté en pie. Se baja una sola vez.
+            </p>
+            <p className="mt-3 text-xs text-texto-ter">En la terminal, dentro de la carpeta <code className="text-texto-sec">server</code>:</p>
+            <pre className="mt-1.5 overflow-x-auto rounded-lg border border-borde bg-fondo px-3 py-2 text-sm text-ambar">
+npm run catalogo
+            </pre>
+            <p className="mt-3 text-xs text-texto-ter">
+              Tarda un par de minutos. Cuando termine, recarga esta página.
+            </p>
+          </div>
+        )}
+
+        {error && !error.includes(AVISO_CATALOGO) && (
           <p className="rounded-lg border border-alerta/30 bg-alerta/10 px-3 py-2 text-sm text-alerta">
             {error}
           </p>

@@ -9,7 +9,8 @@
     "start": "node src/server.js",
     "seed": "node prisma/seed.js",
     "preparar": "prisma generate",
-    "postinstall": "prisma generate || exit 0"
+    "postinstall": "prisma generate || exit 0",
+    "catalogo": "node prisma/catalogo.js"
   },
   "keywords": [],
   "author": "",

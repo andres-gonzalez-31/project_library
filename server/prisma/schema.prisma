@@ -90,3 +90,18 @@ model Auditoria {
 
   @@index([accion, creadoEn])
 }
+/// Copia local del catalogo de Project Gutenberg (pg_catalog.csv).
+/// Se descarga una vez con `npm run catalogo` y se refresca cuando se
+/// quiera. Permite buscar sin depender de que Gutendex este en pie.
+model CatalogoFuente {
+  gutenbergId Int      @id
+  titulo      String
+  autor       String
+  idioma      String
+  materias    String?
+  actualizado DateTime @default(now())
+
+  @@index([titulo])
+  @@index([autor])
+  @@index([idioma])
+}

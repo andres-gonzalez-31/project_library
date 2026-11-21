@@ -30,12 +30,17 @@ llamada nueva se agrega ahí, no suelta en los componentes.
 3. **El `usuarioId` sale siempre del token**, nunca del cuerpo de la petición.
    Tomarlo del body abre un IDOR.
 4. **Las fuentes externas pasan por lista blanca de dominios** en
-   `server/src/services/gutendex.js`. Nunca un `fetch` a una URL que venga del usuario.
+   `services/gutendex.js` y `services/portadas.js`. Nunca un `fetch` a una
+   URL que venga del usuario.
 5. **Mensajes de error ambiguos en auth.** "Credenciales inválidas" tanto si el
    correo no existe como si la clave está mala.
 6. **Solo dominio público.** Gutenberg y Open Library. Nada con derechos vigentes.
 7. **Open Library limita a 100 consultas por IP cada 5 minutos.** Las portadas se
    resuelven y validan **al importar**, jamás al pintar la grilla.
+8. **La búsqueda NO sale a internet.** Va contra `CatalogoFuente`, una copia
+   local del catálogo de Gutenberg que se baja con `npm run catalogo`.
+   Gutendex se cayó con 503 tres veces en desarrollo; no se vuelve a depender
+   de él. El texto del libro sí se baja en vivo, al importar.
 
 ## Sistema visual — "lámpara de noche"
 
@@ -60,9 +65,9 @@ título (deterministico, para que el mismo libro salga siempre igual).
 
 ## Estado
 
-Hecho: auth, catálogo, lector 3D con progreso, importación desde Gutendex,
+Hecho: auth, estante, lector 3D con progreso, Mis lecturas con resumen y
+observaciones, Explorar con catálogo local y portadas verificadas,
 identidad visual.
 
-Pendiente: pantalla Explorar (buscar e importar con portadas validadas),
-Mis lecturas con resumen y observaciones, bloqueo de contraseñas filtradas,
-2FA, pruebas automatizadas y despliegue.
+Pendiente: bloqueo de contraseñas filtradas, 2FA, manejo del 401 cuando
+vence la sesión, pruebas automatizadas y despliegue.
